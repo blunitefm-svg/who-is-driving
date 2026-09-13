@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Who's Driving?</title>
+  <title>the fuck is going on</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -223,11 +223,10 @@
 
   <div class="container">
 
-    <h1>Who's Driving?</h1>
+    <h1>what the hell is going on</h1>
 
     <div class="subtitle">
-      Tiny little driver tracker
-    </div>
+i don't belong here...    </div>
 
     <!-- CURRENT DRIVER -->
     <div class="card current">
@@ -299,18 +298,6 @@
     const SUPABASE_KEY =
       "sb_publishable_ioDgPFsRSgTM3-vpyZiazg_gZSfzoEb";
 
-    /*
-      THIS IS THE IMPORTANT FIX.
-
-      We create the actual Supabase client here
-      and store it in "supabaseClient".
-
-      Then everything below uses:
-        supabaseClient.from(...)
-
-      instead of:
-        supabase.from(...)
-    */
 
     const supabaseClient =
       window.supabase.createClient(
