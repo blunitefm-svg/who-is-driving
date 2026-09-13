@@ -1,10 +1,11 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>the fuck is going on</title>
+  <title>who's driving?</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -13,194 +14,472 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --background: #f2f2f7;
+      --card: rgba(255, 255, 255, 0.88);
+      --input: #f2f2f7;
+      --text: #1c1c1e;
+      --secondary: #8e8e93;
+      --border: rgba(60, 60, 67, 0.14);
+      --accent: #007aff;
+      --button-text: #ffffff;
+      --shadow: rgba(0, 0, 0, 0.08);
+    }
+
     body {
       margin: 0;
-      padding: 20px;
       min-height: 100vh;
-      background: #f5f5f5;
-      color: #222;
-      font-family: Arial, sans-serif;
-      transition: background 0.4s, color 0.4s;
+      padding: 24px 16px 50px;
+      background: var(--background);
+      color: var(--text);
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+      -webkit-font-smoothing: antialiased;
+      transition:
+        background 0.4s ease,
+        color 0.4s ease;
     }
 
     .container {
-      max-width: 700px;
+      width: min(680px, 100%);
       margin: 0 auto;
     }
 
-    h1 {
+    /* header */
+
+    header {
       text-align: center;
-      margin-bottom: 8px;
+      padding: 12px 0 24px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.7px;
     }
 
     .subtitle {
-      text-align: center;
-      color: #777;
-      margin-bottom: 25px;
+      margin-top: 6px;
+      color: var(--secondary);
+      font-size: 0.95rem;
     }
 
+    /* cards */
+
     .card {
-      background: white;
-      border-radius: 18px;
-      padding: 20px;
-      margin-bottom: 18px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-      transition: background 0.4s, color 0.4s;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 22px;
+      margin-bottom: 16px;
+      box-shadow:
+        0 4px 20px var(--shadow);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition:
+        background 0.4s ease,
+        border-color 0.4s ease,
+        box-shadow 0.4s ease;
     }
+
+    .card-title {
+      margin: 0 0 16px;
+      font-size: 1.2rem;
+      font-weight: 650;
+      letter-spacing: -0.2px;
+    }
+
+    /* current driver */
 
     .current {
       text-align: center;
+      padding: 30px 22px 24px;
+    }
+
+    .current-label {
+      color: var(--secondary);
+      font-size: 0.95rem;
     }
 
     .current-name {
-      font-size: 2.2rem;
-      font-weight: bold;
-      margin: 10px 0;
+      margin: 6px 0 5px;
+      font-size: clamp(3rem, 12vw, 5rem);
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: -2px;
+      transition: color 0.4s ease;
     }
 
     .since {
-      color: #777;
-      font-size: 0.95rem;
+      color: var(--secondary);
+      font-size: 0.9rem;
     }
+
+    /* driver buttons */
 
     .buttons {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
-      margin-top: 18px;
+      margin-top: 24px;
     }
 
     button {
+      appearance: none;
       border: none;
       border-radius: 14px;
-      padding: 18px 10px;
-      font-size: 1.1rem;
-      font-weight: bold;
+      min-height: 50px;
+      padding: 13px 12px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
-      background: #e9e9e9;
-      color: #222;
-      transition: transform 0.1s, background 0.2s;
+      transition:
+        transform 0.12s ease,
+        filter 0.12s ease,
+        opacity 0.12s ease;
     }
 
     button:hover {
-      background: #dcdcdc;
+      filter: brightness(0.97);
     }
 
     button:active {
-      transform: scale(0.96);
+      transform: scale(0.97);
+    }
+
+    .puppy-button {
+      background: #ffd1e3;
+      color: #8f2857;
+    }
+
+    .doomer-button {
+      background: #ded4eb;
+      color: #58436c;
+    }
+
+    .n-button {
+      background: #d9efc4;
+      color: #46652d;
     }
 
     .status {
-      text-align: center;
-      font-size: 0.9rem;
-      color: #777;
-      margin-top: 12px;
+      margin-top: 14px;
+      color: var(--secondary);
+      font-size: 0.78rem;
     }
 
+    /* messages */
+
+    .message-form {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .message-input {
+      flex: 1;
+      min-width: 0;
+      height: 48px;
+      border: none;
+      border-radius: 13px;
+      padding: 0 14px;
+      background: var(--input);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .message-input::placeholder {
+      color: var(--secondary);
+    }
+
+    .message-input:focus {
+      box-shadow:
+        0 0 0 2px
+        rgba(0, 122, 255, 0.22);
+    }
+
+    .send-button {
+      min-width: 70px;
+      background: var(--accent);
+      color: var(--button-text);
+    }
+
+    .message-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .message {
+      padding: 13px 14px;
+      border-radius: 15px;
+      background: var(--input);
+    }
+
+    .message.puppy {
+      background: #fff0f5;
+    }
+
+    .message.doomer {
+      background: #f0ebf5;
+    }
+
+    .message.n {
+      background: #edf7e6;
+    }
+
+    .message-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .message-person {
+      font-size: 0.9rem;
+      font-weight: 650;
+    }
+
+    .message-time {
+      color: var(--secondary);
+      font-size: 0.72rem;
+      white-space: nowrap;
+    }
+
+    .message-body {
+      font-size: 0.96rem;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+
+    .no-messages {
+      padding: 12px;
+      color: var(--secondary);
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    /* stats */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    .stat {
+      padding: 15px 8px;
+      border-radius: 15px;
+      text-align: center;
+      background: var(--input);
+    }
+
+    .stat:nth-child(1) {
+      background: #fff0f5;
+    }
+
+    .stat:nth-child(2) {
+      background: #f0ebf5;
+    }
+
+    .stat:nth-child(3) {
+      background: #edf7e6;
+    }
+
+    .stat-name {
+      font-size: 0.9rem;
+      font-weight: 650;
+    }
+
+    .stat-time {
+      margin-top: 4px;
+      color: var(--secondary);
+      font-size: 0.8rem;
+    }
+
+    /* history */
+
     .history-item {
-      padding: 12px 0;
-      border-bottom: 1px solid #ddd;
+      padding: 11px 0 15px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .history-item:first-child {
+      padding-top: 0;
     }
 
     .history-item:last-child {
+      padding-bottom: 0;
       border-bottom: none;
     }
 
     .day-title {
-      font-weight: bold;
-      font-size: 1.1rem;
-      margin-bottom: 8px;
+      margin-bottom: 7px;
+      color: var(--secondary);
+      font-size: 0.82rem;
+      font-weight: 650;
+      text-transform: lowercase;
     }
 
     .session {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       gap: 10px;
-      padding: 7px 0;
+      padding: 6px 0;
     }
 
     .person-name {
-      font-weight: bold;
+      font-size: 0.92rem;
+      font-weight: 600;
     }
 
     .time {
-      color: #777;
+      color: var(--secondary);
+      font-size: 0.82rem;
       text-align: right;
     }
 
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
-    .stat {
-      background: #f2f2f2;
-      padding: 15px 10px;
-      border-radius: 14px;
+    .empty {
+      padding: 15px;
+      color: var(--secondary);
       text-align: center;
-    }
-
-    .stat-name {
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-
-    .stat-time {
-      color: #666;
       font-size: 0.9rem;
     }
 
-    .empty {
-      color: #777;
-      text-align: center;
-      padding: 15px;
+    /* puppy mode */
+
+    body.puppy-mode {
+      --background: #fff1f6;
+      --card: rgba(255, 255, 255, 0.9);
+      --accent: #ff5f9e;
     }
 
-    /* DOOMER MODE */
+    body.puppy-mode .current-name {
+      color: #e94b89;
+    }
+
+    body.puppy-mode .current-name {
+      animation: gentle-bounce 1.8s ease-in-out infinite;
+    }
+
+    @keyframes gentle-bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-3px);
+      }
+    }
+
+    /* doomer mode */
 
     body.doomer-mode {
-      background: #0d0d0f;
-      color: #eeeeee;
+      --background: #16151a;
+      --card: rgba(31, 29, 36, 0.92);
+      --input: #29262f;
+      --text: #f2edf7;
+      --secondary: #99939f;
+      --border: rgba(255, 255, 255, 0.1);
+      --accent: #a889bb;
+      --button-text: #17151a;
+      --shadow: rgba(0, 0, 0, 0.3);
     }
 
-    body.doomer-mode .card {
-      background: #19191c;
-      box-shadow: 0 3px 15px rgba(0,0,0,0.4);
+    body.doomer-mode .current-name {
+      color: #c1a8cc;
     }
 
-    body.doomer-mode .subtitle,
-    body.doomer-mode .since,
-    body.doomer-mode .status,
-    body.doomer-mode .time,
-    body.doomer-mode .stat-time {
-      color: #999;
+    body.doomer-mode .message.puppy {
+      background: #352a31;
     }
 
-    body.doomer-mode button {
-      background: #29292e;
-      color: #eeeeee;
+    body.doomer-mode .message.doomer {
+      background: #302936;
     }
 
-    body.doomer-mode button:hover {
-      background: #38383e;
+    body.doomer-mode .message.n {
+      background: #293129;
     }
 
-    body.doomer-mode .stat {
-      background: #242428;
+    body.doomer-mode .stat:nth-child(1) {
+      background: #352a31;
     }
 
-    body.doomer-mode .history-item {
-      border-bottom-color: #333;
+    body.doomer-mode .stat:nth-child(2) {
+      background: #302936;
     }
 
-    @media (max-width: 500px) {
+    body.doomer-mode .stat:nth-child(3) {
+      background: #293129;
+    }
+
+    body.doomer-mode .puppy-button {
+      background: #553344;
+      color: #f6dce8;
+    }
+
+    body.doomer-mode .doomer-button {
+      background: #493d52;
+      color: #eadff0;
+    }
+
+    body.doomer-mode .n-button {
+      background: #394636;
+      color: #deefd3;
+    }
+
+    /* n mode */
+
+    body.n-mode {
+      --background: #eef8e8;
+      --card: rgba(255, 255, 255, 0.9);
+      --accent: #6b9d49;
+    }
+
+    body.n-mode .current-name {
+      color: #5d8b3f;
+    }
+
+    /* mobile */
+
+    @media (max-width: 520px) {
+
       body {
-        padding: 12px;
+        padding: 16px 10px 40px;
+      }
+
+      .card {
+        border-radius: 19px;
+        padding: 18px;
+      }
+
+      .current {
+        padding: 25px 16px 20px;
       }
 
       .buttons {
         grid-template-columns: 1fr;
+      }
+
+      .message-form {
+        flex-direction: column;
+      }
+
+      .send-button {
+        width: 100%;
       }
 
       .stats {
@@ -209,6 +488,7 @@
 
       .session {
         flex-direction: column;
+        align-items: flex-start;
         gap: 2px;
       }
 
@@ -223,62 +503,136 @@
 
   <div class="container">
 
-    <h1>what the hell is going on</h1>
+    <header>
+      <h1>who's driving?</h1>
 
-    <div class="subtitle">
-i don't belong here...    </div>
+      <div class="subtitle">
+        a little fronting dashboard
+      </div>
+    </header>
 
-    <!-- CURRENT DRIVER -->
+
+    <!-- current driver -->
+
     <div class="card current">
 
-      <div>Currently driving:</div>
-
-      <div id="currentDriver" class="current-name">
-        Loading...
+      <div class="current-label">
+        currently driving
       </div>
 
-      <div id="since" class="since"></div>
+      <div
+        id="currentDriver"
+        class="current-name"
+      >
+        loading...
+      </div>
+
+      <div
+        id="since"
+        class="since"
+      ></div>
 
       <div class="buttons">
-        <button onclick="setDriver('Puppy')">
-          🐶 Puppy
+
+        <button
+          class="puppy-button"
+          onclick="setDriver('Puppy')"
+        >
+          puppy
         </button>
 
-        <button onclick="setDriver('Doomer')">
-          🖤 Doomer
+        <button
+          class="doomer-button"
+          onclick="setDriver('Doomer')"
+        >
+          doomer
         </button>
 
-        <button onclick="setDriver('N')">
-          N
+        <button
+          class="n-button"
+          onclick="setDriver('N')"
+        >
+          n
         </button>
+
       </div>
 
-      <div id="status" class="status">
-        Connecting...
+      <div
+        id="status"
+        class="status"
+      >
+        connecting...
       </div>
 
     </div>
 
 
-    <!-- STATS -->
+    <!-- messages -->
+
     <div class="card">
 
-      <h2>Time driving</h2>
+      <h2 class="card-title">
+        leave a note
+      </h2>
 
-      <div id="stats" class="stats">
-        Loading...
+      <div class="message-form">
+
+        <input
+          id="messageInput"
+          class="message-input"
+          type="text"
+          maxlength="1000"
+          placeholder="what's up?"
+          autocomplete="off"
+        >
+
+        <button
+          class="send-button"
+          onclick="sendMessage()"
+        >
+          send
+        </button>
+
+      </div>
+
+      <div
+        id="messageList"
+        class="message-list"
+      >
+        loading...
       </div>
 
     </div>
 
 
-    <!-- HISTORY -->
+    <!-- stats -->
+
     <div class="card">
 
-      <h2>History</h2>
+      <h2 class="card-title">
+        driving stats
+      </h2>
+
+      <div
+        id="stats"
+        class="stats"
+      >
+        loading...
+      </div>
+
+    </div>
+
+
+    <!-- history -->
+
+    <div class="card">
+
+      <h2 class="card-title">
+        history
+      </h2>
 
       <div id="history">
-        Loading...
+        loading...
       </div>
 
     </div>
@@ -288,16 +642,15 @@ i don't belong here...    </div>
 
   <script>
 
-    /*
-      SUPABASE SETUP
-    */
+    /* --------------------------------------------------
+       supabase
+    -------------------------------------------------- */
 
     const SUPABASE_URL =
       "https://knkneedyoilbgekqluqq.supabase.co";
 
     const SUPABASE_KEY =
       "sb_publishable_ioDgPFsRSgTM3-vpyZiazg_gZSfzoEb";
-
 
     const supabaseClient =
       window.supabase.createClient(
@@ -306,118 +659,137 @@ i don't belong here...    </div>
       );
 
 
-    /*
-      START APP
-    */
+    /* --------------------------------------------------
+       load app
+    -------------------------------------------------- */
 
     async function loadApp() {
 
-      setStatus("Connecting...");
+      setStatus("connecting...");
 
       await loadCurrentDriver();
+      await loadMessages();
       await loadHistory();
       await loadStats();
 
-      setStatus("Connected");
+      setStatus("connected");
     }
 
 
-    /*
-      GET CURRENT DRIVER
-    */
+    /* --------------------------------------------------
+       current driver
+    -------------------------------------------------- */
 
     async function loadCurrentDriver() {
 
-      const { data, error } = await supabaseClient
-        .from("driving_sessions")
-        .select(`
-          id,
-          started_at,
-          person_id,
-          people (
-            name
-          )
-        `)
-        .is("ended_at", null)
-        .order("started_at", {
-          ascending: false
-        })
-        .limit(1);
+      const { data, error } =
+        await supabaseClient
+          .from("driving_sessions")
+          .select(`
+            id,
+            started_at,
+            person_id,
+            people (
+              name
+            )
+          `)
+          .is("ended_at", null)
+          .order("started_at", {
+            ascending: false
+          })
+          .limit(1);
+
 
       if (error) {
 
         console.error(error);
 
-        document.getElementById("currentDriver").textContent =
-          "Error";
+        document.getElementById(
+          "currentDriver"
+        ).textContent = "oops";
 
-        setStatus("Couldn't connect to Supabase");
+        setStatus(
+          "couldn't connect to supabase"
+        );
 
         return;
       }
 
 
       const driverElement =
-        document.getElementById("currentDriver");
+        document.getElementById(
+          "currentDriver"
+        );
 
       const sinceElement =
         document.getElementById("since");
 
 
+      document.body.classList.remove(
+        "puppy-mode",
+        "doomer-mode",
+        "n-mode"
+      );
+
+
       if (!data || data.length === 0) {
 
         driverElement.textContent =
-          "Nobody yet";
+          "nobody yet";
 
-        sinceElement.textContent =
-          "";
-
-        document.body.classList.remove("doomer-mode");
+        sinceElement.textContent = "";
 
         return;
       }
 
 
-      const session = data[0];
+      const session =
+        data[0];
 
       const name =
         session.people.name;
 
+
       driverElement.textContent =
-        name;
+        name.toLowerCase();
+
 
       sinceElement.textContent =
-        "Since " + formatDateTime(session.started_at);
+        "since " +
+        formatDateTime(
+          session.started_at
+        );
 
 
-      /*
-        DOOMER DARK MODE
-      */
+      if (name === "Puppy") {
 
-      if (name === "Doomer") {
+        document.body.classList.add(
+          "puppy-mode"
+        );
 
-        document.body.classList.add("doomer-mode");
+      } else if (name === "Doomer") {
 
-      } else {
+        document.body.classList.add(
+          "doomer-mode"
+        );
 
-        document.body.classList.remove("doomer-mode");
+      } else if (name === "N") {
 
+        document.body.classList.add(
+          "n-mode"
+        );
       }
     }
 
 
-    /*
-      CHANGE DRIVER
-    */
+    /* --------------------------------------------------
+       change driver
+    -------------------------------------------------- */
 
     async function setDriver(name) {
 
-      setStatus("Saving...");
+      setStatus("saving...");
 
-
-      /*
-        Find the person
-      */
 
       const { data: person, error: personError } =
         await supabaseClient
@@ -431,21 +803,21 @@ i don't belong here...    </div>
 
         console.error(personError);
 
-        setStatus("Couldn't find " + name);
+        setStatus(
+          "couldn't find " +
+          name.toLowerCase()
+        );
 
         return;
       }
 
 
-      /*
-        Close every currently-open driving session
-      */
-
       const { error: closeError } =
         await supabaseClient
           .from("driving_sessions")
           .update({
-            ended_at: new Date().toISOString()
+            ended_at:
+              new Date().toISOString()
           })
           .is("ended_at", null);
 
@@ -455,23 +827,20 @@ i don't belong here...    </div>
         console.error(closeError);
 
         setStatus(
-          "Couldn't close previous session"
+          "couldn't close previous session"
         );
 
         return;
       }
 
 
-      /*
-        Start the new session
-      */
-
       const { error: insertError } =
         await supabaseClient
           .from("driving_sessions")
           .insert({
             person_id: person.id,
-            started_at: new Date().toISOString()
+            started_at:
+              new Date().toISOString()
           });
 
 
@@ -480,30 +849,242 @@ i don't belong here...    </div>
         console.error(insertError);
 
         setStatus(
-          "Couldn't save: " + insertError.message
+          "couldn't save: " +
+          insertError.message
         );
 
         return;
       }
 
 
-      /*
-        Everything worked.
-        Reload the screen.
-      */
-
       await loadApp();
     }
 
 
-    /*
-      LOAD HISTORY
-    */
+    /* --------------------------------------------------
+       send message
+    -------------------------------------------------- */
+
+    async function sendMessage() {
+
+      const input =
+        document.getElementById(
+          "messageInput"
+        );
+
+      const body =
+        input.value.trim();
+
+
+      if (!body) {
+        return;
+      }
+
+
+      setStatus("sending...");
+
+
+      const {
+        data: currentSession,
+        error: sessionError
+      } =
+        await supabaseClient
+          .from("driving_sessions")
+          .select(`
+            person_id,
+            ended_at
+          `)
+          .is("ended_at", null)
+          .order("started_at", {
+            ascending: false
+          })
+          .limit(1)
+          .maybeSingle();
+
+
+      if (sessionError) {
+
+        console.error(sessionError);
+
+        setStatus(
+          "couldn't find current driver"
+        );
+
+        return;
+      }
+
+
+      if (!currentSession) {
+
+        setStatus(
+          "pick a driver first"
+        );
+
+        return;
+      }
+
+
+      const { error: messageError } =
+        await supabaseClient
+          .from("messages")
+          .insert({
+            person_id:
+              currentSession.person_id,
+            body: body
+          });
+
+
+      if (messageError) {
+
+        console.error(messageError);
+
+        setStatus(
+          "couldn't send: " +
+          messageError.message
+        );
+
+        return;
+      }
+
+
+      input.value = "";
+
+      await loadMessages();
+
+      setStatus("connected");
+    }
+
+
+    /* --------------------------------------------------
+       enter sends message
+    -------------------------------------------------- */
+
+    document
+      .getElementById("messageInput")
+      .addEventListener(
+        "keydown",
+        function(event) {
+
+          if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            sendMessage();
+          }
+        }
+      );
+
+
+    /* --------------------------------------------------
+       load messages
+    -------------------------------------------------- */
+
+    async function loadMessages() {
+
+      const messageList =
+        document.getElementById(
+          "messageList"
+        );
+
+
+      const { data, error } =
+        await supabaseClient
+          .from("messages")
+          .select(`
+            id,
+            body,
+            created_at,
+            person_id,
+            people (
+              name
+            )
+          `)
+          .order("created_at", {
+            ascending: false
+          })
+          .limit(50);
+
+
+      if (error) {
+
+        console.error(error);
+
+        messageList.innerHTML =
+          '<div class="no-messages">couldn\'t load messages</div>';
+
+        return;
+      }
+
+
+      if (!data || data.length === 0) {
+
+        messageList.innerHTML =
+          '<div class="no-messages">no notes yet</div>';
+
+        return;
+      }
+
+
+      let html = "";
+
+
+      data.forEach(message => {
+
+        const name =
+          message.people
+            ? message.people.name
+            : "unknown";
+
+
+        const className =
+          name.toLowerCase();
+
+
+        html += `
+          <div class="message ${escapeHtml(className)}">
+
+            <div class="message-header">
+
+              <div class="message-person">
+                ${escapeHtml(
+                  name.toLowerCase()
+                )}
+              </div>
+
+              <div class="message-time">
+                ${formatMessageTime(
+                  message.created_at
+                )}
+              </div>
+
+            </div>
+
+            <div class="message-body">
+              ${escapeHtml(
+                message.body
+              )}
+            </div>
+
+          </div>
+        `;
+      });
+
+
+      messageList.innerHTML =
+        html;
+    }
+
+
+    /* --------------------------------------------------
+       history
+    -------------------------------------------------- */
 
     async function loadHistory() {
 
       const historyElement =
-        document.getElementById("history");
+        document.getElementById(
+          "history"
+        );
 
 
       const { data, error } =
@@ -528,7 +1109,7 @@ i don't belong here...    </div>
         console.error(error);
 
         historyElement.innerHTML =
-          '<div class="empty">Couldn\'t load history.</div>';
+          '<div class="empty">couldn\'t load history</div>';
 
         return;
       }
@@ -537,15 +1118,11 @@ i don't belong here...    </div>
       if (!data || data.length === 0) {
 
         historyElement.innerHTML =
-          '<div class="empty">No history yet.</div>';
+          '<div class="empty">no history yet</div>';
 
         return;
       }
 
-
-      /*
-        Group sessions by day
-      */
 
       const groups = {};
 
@@ -553,14 +1130,18 @@ i don't belong here...    </div>
       data.forEach(session => {
 
         const date =
-          new Date(session.started_at);
+          new Date(
+            session.started_at
+          );
 
         const key =
           date.toLocaleDateString();
 
+
         if (!groups[key]) {
           groups[key] = [];
         }
+
 
         groups[key].push(session);
       });
@@ -575,7 +1156,9 @@ i don't belong here...    </div>
           groups[key];
 
         const firstDate =
-          new Date(sessions[0].started_at);
+          new Date(
+            sessions[0].started_at
+          );
 
 
         html += `
@@ -592,16 +1175,20 @@ i don't belong here...    </div>
           const person =
             session.people
               ? session.people.name
-              : "Unknown";
+              : "unknown";
 
 
           const start =
-            formatTime(session.started_at);
+            formatTime(
+              session.started_at
+            );
 
 
           const end =
             session.ended_at
-              ? formatTime(session.ended_at)
+              ? formatTime(
+                  session.ended_at
+                )
               : "now";
 
 
@@ -609,7 +1196,9 @@ i don't belong here...    </div>
             <div class="session">
 
               <div class="person-name">
-                ${escapeHtml(person)}
+                ${escapeHtml(
+                  person.toLowerCase()
+                )}
               </div>
 
               <div class="time">
@@ -632,14 +1221,16 @@ i don't belong here...    </div>
     }
 
 
-    /*
-      LOAD TOTAL TIME STATS
-    */
+    /* --------------------------------------------------
+       stats
+    -------------------------------------------------- */
 
     async function loadStats() {
 
       const statsElement =
-        document.getElementById("stats");
+        document.getElementById(
+          "stats"
+        );
 
 
       const { data, error } =
@@ -659,7 +1250,7 @@ i don't belong here...    </div>
         console.error(error);
 
         statsElement.innerHTML =
-          '<div class="empty">Couldn\'t load stats.</div>';
+          '<div class="empty">couldn\'t load stats</div>';
 
         return;
       }
@@ -688,21 +1279,29 @@ i don't belong here...    </div>
 
 
         const start =
-          new Date(session.started_at)
-            .getTime();
+          new Date(
+            session.started_at
+          ).getTime();
 
 
         const end =
           session.ended_at
-            ? new Date(session.ended_at).getTime()
+            ? new Date(
+                session.ended_at
+              ).getTime()
             : now;
 
 
         const duration =
-          Math.max(0, end - start);
+          Math.max(
+            0,
+            end - start
+          );
 
 
-        if (totals[name] !== undefined) {
+        if (
+          totals[name] !== undefined
+        ) {
 
           totals[name] += duration;
         }
@@ -712,44 +1311,61 @@ i don't belong here...    </div>
       statsElement.innerHTML = `
 
         <div class="stat">
-          <div class="stat-name">🐶 Puppy</div>
-          <div class="stat-time">
-            ${formatDuration(totals.Puppy)}
+
+          <div class="stat-name">
+            puppy
           </div>
+
+          <div class="stat-time">
+            ${formatDuration(
+              totals.Puppy
+            )}
+          </div>
+
         </div>
 
         <div class="stat">
-          <div class="stat-name">🖤 Doomer</div>
-          <div class="stat-time">
-            ${formatDuration(totals.Doomer)}
+
+          <div class="stat-name">
+            doomer
           </div>
+
+          <div class="stat-time">
+            ${formatDuration(
+              totals.Doomer
+            )}
+          </div>
+
         </div>
 
         <div class="stat">
-          <div class="stat-name">N</div>
-          <div class="stat-time">
-            ${formatDuration(totals.N)}
-          </div>
-        </div>
 
+          <div class="stat-name">
+            n
+          </div>
+
+          <div class="stat-time">
+            ${formatDuration(
+              totals.N
+            )}
+          </div>
+
+        </div>
       `;
     }
 
 
-    /*
-      STATUS MESSAGE
-    */
+    /* --------------------------------------------------
+       helpers
+    -------------------------------------------------- */
 
     function setStatus(message) {
 
-      document.getElementById("status")
-        .textContent = message;
+      document.getElementById(
+        "status"
+      ).textContent = message;
     }
 
-
-    /*
-      FORMAT TIME
-    */
 
     function formatTime(timestamp) {
 
@@ -760,10 +1376,6 @@ i don't belong here...    </div>
         });
     }
 
-
-    /*
-      FORMAT DATE + TIME
-    */
 
     function formatDateTime(timestamp) {
 
@@ -777,9 +1389,17 @@ i don't belong here...    </div>
     }
 
 
-    /*
-      FORMAT DAY
-    */
+    function formatMessageTime(timestamp) {
+
+      return new Date(timestamp)
+        .toLocaleString([], {
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit"
+        });
+    }
+
 
     function formatDay(date) {
 
@@ -798,7 +1418,8 @@ i don't belong here...    </div>
         date.toLocaleDateString() ===
         today.toLocaleDateString()
       ) {
-        return "Today";
+
+        return "today";
       }
 
 
@@ -806,24 +1427,26 @@ i don't belong here...    </div>
         date.toLocaleDateString() ===
         yesterday.toLocaleDateString()
       ) {
-        return "Yesterday";
+
+        return "yesterday";
       }
 
 
-      return date.toLocaleDateString([], {
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-        year: "numeric"
-      });
+      return date.toLocaleDateString(
+        [],
+        {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          year: "numeric"
+        }
+      );
     }
 
 
-    /*
-      FORMAT DURATION
-    */
-
-    function formatDuration(milliseconds) {
+    function formatDuration(
+      milliseconds
+    ) {
 
       const totalMinutes =
         Math.floor(
@@ -865,14 +1488,12 @@ i don't belong here...    </div>
     }
 
 
-    /*
-      BASIC HTML SAFETY
-    */
-
     function escapeHtml(text) {
 
       const div =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       div.textContent =
         text;
@@ -881,9 +1502,9 @@ i don't belong here...    </div>
     }
 
 
-    /*
-      START EVERYTHING
-    */
+    /* --------------------------------------------------
+       start
+    -------------------------------------------------- */
 
     loadApp();
 
@@ -891,3 +1512,4 @@ i don't belong here...    </div>
 
 </body>
 </html>
+```
