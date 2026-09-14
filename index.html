@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,13 +16,12 @@
 
     :root {
       --background: #f2f2f7;
-      --card: rgba(255, 255, 255, 0.88);
+      --card: rgba(255, 255, 255, 0.9);
       --input: #f2f2f7;
       --text: #1c1c1e;
       --secondary: #8e8e93;
       --border: rgba(60, 60, 67, 0.14);
       --accent: #007aff;
-      --button-text: #ffffff;
       --shadow: rgba(0, 0, 0, 0.08);
     }
 
@@ -50,8 +50,6 @@
       margin: 0 auto;
     }
 
-    /* header */
-
     header {
       text-align: center;
       padding: 12px 0 24px;
@@ -70,16 +68,13 @@
       font-size: 0.95rem;
     }
 
-    /* cards */
-
     .card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 22px;
       padding: 22px;
       margin-bottom: 16px;
-      box-shadow:
-        0 4px 20px var(--shadow);
+      box-shadow: 0 4px 20px var(--shadow);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       transition:
@@ -95,7 +90,7 @@
       letter-spacing: -0.2px;
     }
 
-    /* current driver */
+    /* current fronters */
 
     .current {
       text-align: center;
@@ -105,23 +100,46 @@
     .current-label {
       color: var(--secondary);
       font-size: 0.95rem;
+      margin-bottom: 12px;
     }
 
-    .current-name {
-      margin: 6px 0 5px;
-      font-size: clamp(3rem, 12vw, 5rem);
-      line-height: 1;
-      font-weight: 700;
-      letter-spacing: -2px;
-      transition: color 0.4s ease;
+    .active-fronters {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 46px;
     }
 
-    .since {
+    .active-person {
+      padding: 11px 16px;
+      border-radius: 14px;
+      font-size: 1.05rem;
+      font-weight: 650;
+    }
+
+    .active-person.puppy {
+      background: #ffd1e3;
+      color: #8f2857;
+    }
+
+    .active-person.doomer {
+      background: #ded4eb;
+      color: #58436c;
+    }
+
+    .active-person.n {
+      background: #d9efc4;
+      color: #46652d;
+    }
+
+    .none-active {
       color: var(--secondary);
-      font-size: 0.9rem;
+      padding: 12px;
+      font-size: 0.95rem;
     }
 
-    /* driver buttons */
+    /* toggle buttons */
 
     .buttons {
       display: grid;
@@ -134,7 +152,7 @@
       appearance: none;
       border: none;
       border-radius: 14px;
-      min-height: 50px;
+      min-height: 52px;
       padding: 13px 12px;
       font-family: inherit;
       font-size: 1rem;
@@ -143,15 +161,22 @@
       transition:
         transform 0.12s ease,
         filter 0.12s ease,
-        opacity 0.12s ease;
-    }
-
-    button:hover {
-      filter: brightness(0.97);
+        opacity 0.12s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
     }
 
     button:active {
       transform: scale(0.97);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .driver-button {
+      position: relative;
     }
 
     .puppy-button {
@@ -167,6 +192,30 @@
     .n-button {
       background: #d9efc4;
       color: #46652d;
+    }
+
+    .driver-button.active {
+      box-shadow:
+        0 0 0 3px var(--text);
+      transform: translateY(-1px);
+    }
+
+    .driver-button.active::after {
+      content: "on";
+      display: block;
+      margin-top: 3px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      opacity: 0.65;
+    }
+
+    .driver-button:not(.active)::after {
+      content: "off";
+      display: block;
+      margin-top: 3px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      opacity: 0.5;
     }
 
     .status {
@@ -203,14 +252,13 @@
 
     .message-input:focus {
       box-shadow:
-        0 0 0 2px
-        rgba(0, 122, 255, 0.22);
+        0 0 0 2px rgba(0, 122, 255, 0.22);
     }
 
     .send-button {
       min-width: 70px;
       background: var(--accent);
-      color: var(--button-text);
+      color: white;
     }
 
     .message-list {
@@ -328,7 +376,6 @@
       color: var(--secondary);
       font-size: 0.82rem;
       font-weight: 650;
-      text-transform: lowercase;
     }
 
     .session {
@@ -365,22 +412,8 @@
       --accent: #ff5f9e;
     }
 
-    body.puppy-mode .current-name {
+    body.puppy-mode .current-label {
       color: #e94b89;
-    }
-
-    body.puppy-mode .current-name {
-      animation: gentle-bounce 1.8s ease-in-out infinite;
-    }
-
-    @keyframes gentle-bounce {
-      0%, 100% {
-        transform: translateY(0);
-      }
-
-      50% {
-        transform: translateY(-3px);
-      }
     }
 
     /* doomer mode */
@@ -393,12 +426,7 @@
       --secondary: #99939f;
       --border: rgba(255, 255, 255, 0.1);
       --accent: #a889bb;
-      --button-text: #17151a;
       --shadow: rgba(0, 0, 0, 0.3);
-    }
-
-    body.doomer-mode .current-name {
-      color: #c1a8cc;
     }
 
     body.doomer-mode .message.puppy {
@@ -446,10 +474,6 @@
       --background: #eef8e8;
       --card: rgba(255, 255, 255, 0.9);
       --accent: #6b9d49;
-    }
-
-    body.n-mode .current-name {
-      color: #5d8b3f;
     }
 
     /* mobile */
@@ -511,7 +535,7 @@
     </header>
 
 
-    <!-- current driver -->
+    <!-- current fronters -->
 
     <div class="card current">
 
@@ -520,36 +544,34 @@
       </div>
 
       <div
-        id="currentDriver"
-        class="current-name"
+        id="activeFronters"
+        class="active-fronters"
       >
         loading...
       </div>
 
-      <div
-        id="since"
-        class="since"
-      ></div>
-
       <div class="buttons">
 
         <button
-          class="puppy-button"
-          onclick="setDriver('Puppy')"
+          id="button-puppy"
+          class="driver-button puppy-button"
+          onclick="toggleDriver('Puppy')"
         >
           puppy
         </button>
 
         <button
-          class="doomer-button"
-          onclick="setDriver('Doomer')"
+          id="button-doomer"
+          class="driver-button doomer-button"
+          onclick="toggleDriver('Doomer')"
         >
           doomer
         </button>
 
         <button
-          class="n-button"
-          onclick="setDriver('N')"
+          id="button-n"
+          class="driver-button n-button"
+          onclick="toggleDriver('N')"
         >
           n
         </button>
@@ -666,7 +688,7 @@
 
       setStatus("connecting...");
 
-      await loadCurrentDriver();
+      await loadCurrentFronters();
       await loadMessages();
       await loadHistory();
       await loadStats();
@@ -676,10 +698,10 @@
 
 
     /* --------------------------------------------------
-       current driver
+       load current fronters
     -------------------------------------------------- */
 
-    async function loadCurrentDriver() {
+    async function loadCurrentFronters() {
 
       const { data, error } =
         await supabaseClient
@@ -694,9 +716,8 @@
           `)
           .is("ended_at", null)
           .order("started_at", {
-            ascending: false
-          })
-          .limit(1);
+            ascending: true
+          });
 
 
       if (error) {
@@ -704,8 +725,9 @@
         console.error(error);
 
         document.getElementById(
-          "currentDriver"
-        ).textContent = "oops";
+          "activeFronters"
+        ).innerHTML =
+          '<div class="none-active">couldn\'t load fronters</div>';
 
         setStatus(
           "couldn't connect to supabase"
@@ -715,13 +737,10 @@
       }
 
 
-      const driverElement =
+      const activeElement =
         document.getElementById(
-          "currentDriver"
+          "activeFronters"
         );
-
-      const sinceElement =
-        document.getElementById("since");
 
 
       document.body.classList.remove(
@@ -731,48 +750,94 @@
       );
 
 
+      document
+        .querySelectorAll(".driver-button")
+        .forEach(button => {
+          button.classList.remove("active");
+        });
+
+
       if (!data || data.length === 0) {
 
-        driverElement.textContent =
-          "nobody yet";
-
-        sinceElement.textContent = "";
+        activeElement.innerHTML =
+          '<div class="none-active">nobody is driving</div>';
 
         return;
       }
 
 
-      const session =
-        data[0];
+      let html = "";
 
-      const name =
-        session.people.name;
-
-
-      driverElement.textContent =
-        name.toLowerCase();
+      let hasDoomer = false;
+      let hasPuppy = false;
+      let hasN = false;
 
 
-      sinceElement.textContent =
-        "since " +
-        formatDateTime(
-          session.started_at
-        );
+      data.forEach(session => {
+
+        const name =
+          session.people.name;
+
+        const className =
+          name.toLowerCase();
 
 
-      if (name === "Puppy") {
+        html += `
+          <div class="active-person ${escapeHtml(className)}">
+            ${escapeHtml(className)}
+          </div>
+        `;
 
-        document.body.classList.add(
-          "puppy-mode"
-        );
 
-      } else if (name === "Doomer") {
+        const button =
+          document.getElementById(
+            "button-" + className
+          );
+
+
+        if (button) {
+          button.classList.add("active");
+        }
+
+
+        if (name === "Doomer") {
+          hasDoomer = true;
+        }
+
+        if (name === "Puppy") {
+          hasPuppy = true;
+        }
+
+        if (name === "N") {
+          hasN = true;
+        }
+      });
+
+
+      activeElement.innerHTML =
+        html;
+
+
+      /*
+        doomer gets priority for the overall
+        page theme because dark mode is easier
+        to see if doomer is one of several
+        active fronters.
+      */
+
+      if (hasDoomer) {
 
         document.body.classList.add(
           "doomer-mode"
         );
 
-      } else if (name === "N") {
+      } else if (hasPuppy) {
+
+        document.body.classList.add(
+          "puppy-mode"
+        );
+
+      } else if (hasN) {
 
         document.body.classList.add(
           "n-mode"
@@ -782,10 +847,10 @@
 
 
     /* --------------------------------------------------
-       change driver
+       toggle driver
     -------------------------------------------------- */
 
-    async function setDriver(name) {
+    async function toggleDriver(name) {
 
       setStatus("saving...");
 
@@ -811,48 +876,92 @@
       }
 
 
-      const { error: closeError } =
+      /*
+        check whether this person already
+        has an open session
+      */
+
+      const { data: existing, error: existingError } =
         await supabaseClient
           .from("driving_sessions")
-          .update({
-            ended_at:
-              new Date().toISOString()
-          })
-          .is("ended_at", null);
+          .select("id")
+          .eq("person_id", person.id)
+          .is("ended_at", null)
+          .limit(1);
 
 
-      if (closeError) {
+      if (existingError) {
 
-        console.error(closeError);
+        console.error(existingError);
 
         setStatus(
-          "couldn't close previous session"
+          "couldn't check driver"
         );
 
         return;
       }
 
 
-      const { error: insertError } =
-        await supabaseClient
-          .from("driving_sessions")
-          .insert({
-            person_id: person.id,
-            started_at:
-              new Date().toISOString()
-          });
+      /*
+        if they're currently driving,
+        turn them off
+      */
+
+      if (existing && existing.length > 0) {
+
+        const { error } =
+          await supabaseClient
+            .from("driving_sessions")
+            .update({
+              ended_at:
+                new Date().toISOString()
+            })
+            .eq(
+              "id",
+              existing[0].id
+            );
 
 
-      if (insertError) {
+        if (error) {
 
-        console.error(insertError);
+          console.error(error);
 
-        setStatus(
-          "couldn't save: " +
-          insertError.message
-        );
+          setStatus(
+            "couldn't turn off " +
+            name.toLowerCase()
+          );
 
-        return;
+          return;
+        }
+
+
+      /*
+        otherwise turn them on
+      */
+
+      } else {
+
+        const { error } =
+          await supabaseClient
+            .from("driving_sessions")
+            .insert({
+              person_id: person.id,
+              started_at:
+                new Date().toISOString()
+            });
+
+
+        if (error) {
+
+          console.error(error);
+
+          setStatus(
+            "couldn't turn on " +
+            name.toLowerCase()
+          );
+
+          return;
+        }
       }
 
 
@@ -883,6 +992,11 @@
       setStatus("sending...");
 
 
+      /*
+        use the first currently active
+        fronter as the author
+      */
+
       const {
         data: currentSession,
         error: sessionError
@@ -891,7 +1005,10 @@
           .from("driving_sessions")
           .select(`
             person_id,
-            ended_at
+            started_at,
+            people (
+              name
+            )
           `)
           .is("ended_at", null)
           .order("started_at", {
@@ -906,7 +1023,7 @@
         console.error(sessionError);
 
         setStatus(
-          "couldn't find current driver"
+          "couldn't find current fronter"
         );
 
         return;
@@ -916,7 +1033,7 @@
       if (!currentSession) {
 
         setStatus(
-          "pick a driver first"
+          "turn someone on first"
         );
 
         return;
@@ -1046,7 +1163,7 @@
 
               <div class="message-person">
                 ${escapeHtml(
-                  name.toLowerCase()
+                  className
                 )}
               </div>
 
@@ -1133,8 +1250,9 @@
             session.started_at
           );
 
+
         const key =
-          date.toLocaleDateString();
+          berlinDateKey(date);
 
 
         if (!groups[key]) {
@@ -1153,6 +1271,7 @@
 
         const sessions =
           groups[key];
+
 
         const firstDate =
           new Date(
@@ -1355,22 +1474,29 @@
 
 
     /* --------------------------------------------------
-       helpers
+       germany timezone helpers
     -------------------------------------------------- */
 
-    function setStatus(message) {
+    function berlinDateKey(date) {
 
-      document.getElementById(
-        "status"
-      ).textContent = message;
+      return new Intl.DateTimeFormat(
+        "en-CA",
+        {
+          timeZone: "Europe/Berlin",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit"
+        }
+      ).format(date);
     }
 
 
     function formatTime(timestamp) {
 
       return new Date(timestamp)
-        .toLocaleTimeString([], {
-          hour: "numeric",
+        .toLocaleTimeString("en-GB", {
+          timeZone: "Europe/Berlin",
+          hour: "2-digit",
           minute: "2-digit"
         });
     }
@@ -1379,10 +1505,11 @@
     function formatDateTime(timestamp) {
 
       return new Date(timestamp)
-        .toLocaleString([], {
+        .toLocaleString("en-GB", {
+          timeZone: "Europe/Berlin",
           month: "short",
           day: "numeric",
-          hour: "numeric",
+          hour: "2-digit",
           minute: "2-digit"
         });
     }
@@ -1391,10 +1518,11 @@
     function formatMessageTime(timestamp) {
 
       return new Date(timestamp)
-        .toLocaleString([], {
+        .toLocaleString("en-GB", {
+          timeZone: "Europe/Berlin",
           month: "short",
           day: "numeric",
-          hour: "numeric",
+          hour: "2-digit",
           minute: "2-digit"
         });
     }
@@ -1402,8 +1530,11 @@
 
     function formatDay(date) {
 
-      const today =
-        new Date();
+      const todayKey =
+        berlinDateKey(
+          new Date()
+        );
+
 
       const yesterday =
         new Date();
@@ -1413,33 +1544,36 @@
       );
 
 
-      if (
-        date.toLocaleDateString() ===
-        today.toLocaleDateString()
-      ) {
+      const yesterdayKey =
+        berlinDateKey(
+          yesterday
+        );
 
+
+      const dateKey =
+        berlinDateKey(date);
+
+
+      if (dateKey === todayKey) {
         return "today";
       }
 
 
-      if (
-        date.toLocaleDateString() ===
-        yesterday.toLocaleDateString()
-      ) {
-
+      if (dateKey === yesterdayKey) {
         return "yesterday";
       }
 
 
-      return date.toLocaleDateString(
-        [],
+      return new Intl.DateTimeFormat(
+        "en-GB",
         {
+          timeZone: "Europe/Berlin",
           weekday: "long",
           month: "long",
           day: "numeric",
           year: "numeric"
         }
-      );
+      ).format(date);
     }
 
 
@@ -1498,6 +1632,14 @@
         text;
 
       return div.innerHTML;
+    }
+
+
+    function setStatus(message) {
+
+      document.getElementById(
+        "status"
+      ).textContent = message;
     }
 
 
