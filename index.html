@@ -1,0 +1,1656 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>who's driving?</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --background: #f2f2f7;
+      --card: rgba(255, 255, 255, 0.9);
+      --input: #f2f2f7;
+      --text: #1c1c1e;
+      --secondary: #8e8e93;
+      --border: rgba(60, 60, 67, 0.14);
+      --accent: #007aff;
+      --shadow: rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px 16px 50px;
+      background: var(--background);
+      color: var(--text);
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+      -webkit-font-smoothing: antialiased;
+      transition:
+        background 0.4s ease,
+        color 0.4s ease;
+    }
+
+    .container {
+      width: min(680px, 100%);
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 12px 0 24px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.7px;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: var(--secondary);
+      font-size: 0.95rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 22px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 20px var(--shadow);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition:
+        background 0.4s ease,
+        border-color 0.4s ease,
+        box-shadow 0.4s ease;
+    }
+
+    .card-title {
+      margin: 0 0 16px;
+      font-size: 1.2rem;
+      font-weight: 650;
+      letter-spacing: -0.2px;
+    }
+
+    /* current fronters */
+
+    .current {
+      text-align: center;
+      padding: 30px 22px 24px;
+    }
+
+    .current-label {
+      color: var(--secondary);
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+    }
+
+    .active-fronters {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 46px;
+    }
+
+    .active-person {
+      padding: 11px 16px;
+      border-radius: 14px;
+      font-size: 1.05rem;
+      font-weight: 650;
+    }
+
+    .active-person.puppy {
+      background: #ffd1e3;
+      color: #8f2857;
+    }
+
+    .active-person.doomer {
+      background: #ded4eb;
+      color: #58436c;
+    }
+
+    .active-person.n {
+      background: #d9efc4;
+      color: #46652d;
+    }
+
+    .none-active {
+      color: var(--secondary);
+      padding: 12px;
+      font-size: 0.95rem;
+    }
+
+    /* toggle buttons */
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    button {
+      appearance: none;
+      border: none;
+      border-radius: 14px;
+      min-height: 52px;
+      padding: 13px 12px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition:
+        transform 0.12s ease,
+        filter 0.12s ease,
+        opacity 0.12s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .driver-button {
+      position: relative;
+    }
+
+    .puppy-button {
+      background: #ffd1e3;
+      color: #8f2857;
+    }
+
+    .doomer-button {
+      background: #ded4eb;
+      color: #58436c;
+    }
+
+    .n-button {
+      background: #d9efc4;
+      color: #46652d;
+    }
+
+    .driver-button.active {
+      box-shadow:
+        0 0 0 3px var(--text);
+      transform: translateY(-1px);
+    }
+
+    .driver-button.active::after {
+      content: "on";
+      display: block;
+      margin-top: 3px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      opacity: 0.65;
+    }
+
+    .driver-button:not(.active)::after {
+      content: "off";
+      display: block;
+      margin-top: 3px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      opacity: 0.5;
+    }
+
+    .status {
+      margin-top: 14px;
+      color: var(--secondary);
+      font-size: 0.78rem;
+    }
+
+    /* messages */
+
+    .message-form {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .message-input {
+      flex: 1;
+      min-width: 0;
+      height: 48px;
+      border: none;
+      border-radius: 13px;
+      padding: 0 14px;
+      background: var(--input);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .message-input::placeholder {
+      color: var(--secondary);
+    }
+
+    .message-input:focus {
+      box-shadow:
+        0 0 0 2px rgba(0, 122, 255, 0.22);
+    }
+
+    .send-button {
+      min-width: 70px;
+      background: var(--accent);
+      color: white;
+    }
+
+    .message-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .message {
+      padding: 13px 14px;
+      border-radius: 15px;
+      background: var(--input);
+    }
+
+    .message.puppy {
+      background: #fff0f5;
+    }
+
+    .message.doomer {
+      background: #f0ebf5;
+    }
+
+    .message.n {
+      background: #edf7e6;
+    }
+
+    .message-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .message-person {
+      font-size: 0.9rem;
+      font-weight: 650;
+    }
+
+    .message-time {
+      color: var(--secondary);
+      font-size: 0.72rem;
+      white-space: nowrap;
+    }
+
+    .message-body {
+      font-size: 0.96rem;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+
+    .no-messages {
+      padding: 12px;
+      color: var(--secondary);
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    /* stats */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    .stat {
+      padding: 15px 8px;
+      border-radius: 15px;
+      text-align: center;
+      background: var(--input);
+    }
+
+    .stat:nth-child(1) {
+      background: #fff0f5;
+    }
+
+    .stat:nth-child(2) {
+      background: #f0ebf5;
+    }
+
+    .stat:nth-child(3) {
+      background: #edf7e6;
+    }
+
+    .stat-name {
+      font-size: 0.9rem;
+      font-weight: 650;
+    }
+
+    .stat-time {
+      margin-top: 4px;
+      color: var(--secondary);
+      font-size: 0.8rem;
+    }
+
+    /* history */
+
+    .history-item {
+      padding: 11px 0 15px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .history-item:first-child {
+      padding-top: 0;
+    }
+
+    .history-item:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .day-title {
+      margin-bottom: 7px;
+      color: var(--secondary);
+      font-size: 0.82rem;
+      font-weight: 650;
+    }
+
+    .session {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+    }
+
+    .person-name {
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .time {
+      color: var(--secondary);
+      font-size: 0.82rem;
+      text-align: right;
+    }
+
+    .empty {
+      padding: 15px;
+      color: var(--secondary);
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    /* puppy mode */
+
+    body.puppy-mode {
+      --background: #fff1f6;
+      --card: rgba(255, 255, 255, 0.9);
+      --accent: #ff5f9e;
+    }
+
+    body.puppy-mode .current-label {
+      color: #e94b89;
+    }
+
+    /* doomer mode */
+
+    body.doomer-mode {
+      --background: #16151a;
+      --card: rgba(31, 29, 36, 0.92);
+      --input: #29262f;
+      --text: #f2edf7;
+      --secondary: #99939f;
+      --border: rgba(255, 255, 255, 0.1);
+      --accent: #a889bb;
+      --shadow: rgba(0, 0, 0, 0.3);
+    }
+
+    body.doomer-mode .message.puppy {
+      background: #352a31;
+    }
+
+    body.doomer-mode .message.doomer {
+      background: #302936;
+    }
+
+    body.doomer-mode .message.n {
+      background: #293129;
+    }
+
+    body.doomer-mode .stat:nth-child(1) {
+      background: #352a31;
+    }
+
+    body.doomer-mode .stat:nth-child(2) {
+      background: #302936;
+    }
+
+    body.doomer-mode .stat:nth-child(3) {
+      background: #293129;
+    }
+
+    body.doomer-mode .puppy-button {
+      background: #553344;
+      color: #f6dce8;
+    }
+
+    body.doomer-mode .doomer-button {
+      background: #493d52;
+      color: #eadff0;
+    }
+
+    body.doomer-mode .n-button {
+      background: #394636;
+      color: #deefd3;
+    }
+
+    /* n mode */
+
+    body.n-mode {
+      --background: #eef8e8;
+      --card: rgba(255, 255, 255, 0.9);
+      --accent: #6b9d49;
+    }
+
+    /* mobile */
+
+    @media (max-width: 520px) {
+
+      body {
+        padding: 16px 10px 40px;
+      }
+
+      .card {
+        border-radius: 19px;
+        padding: 18px;
+      }
+
+      .current {
+        padding: 25px 16px 20px;
+      }
+
+      .buttons {
+        grid-template-columns: 1fr;
+      }
+
+      .message-form {
+        flex-direction: column;
+      }
+
+      .send-button {
+        width: 100%;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .session {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+      }
+
+      .time {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <header>
+      <h1>who's driving?</h1>
+
+      <div class="subtitle">
+        a little fronting dashboard
+      </div>
+    </header>
+
+
+    <!-- current fronters -->
+
+    <div class="card current">
+
+      <div class="current-label">
+        currently driving
+      </div>
+
+      <div
+        id="activeFronters"
+        class="active-fronters"
+      >
+        loading...
+      </div>
+
+      <div class="buttons">
+
+        <button
+          id="button-puppy"
+          class="driver-button puppy-button"
+          onclick="toggleDriver('Puppy')"
+        >
+          puppy
+        </button>
+
+        <button
+          id="button-doomer"
+          class="driver-button doomer-button"
+          onclick="toggleDriver('Doomer')"
+        >
+          doomer
+        </button>
+
+        <button
+          id="button-n"
+          class="driver-button n-button"
+          onclick="toggleDriver('N')"
+        >
+          n
+        </button>
+
+      </div>
+
+      <div
+        id="status"
+        class="status"
+      >
+        connecting...
+      </div>
+
+    </div>
+
+
+    <!-- messages -->
+
+    <div class="card">
+
+      <h2 class="card-title">
+        leave a note
+      </h2>
+
+      <div class="message-form">
+
+        <input
+          id="messageInput"
+          class="message-input"
+          type="text"
+          maxlength="1000"
+          placeholder="what's up?"
+          autocomplete="off"
+        >
+
+        <button
+          class="send-button"
+          onclick="sendMessage()"
+        >
+          send
+        </button>
+
+      </div>
+
+      <div
+        id="messageList"
+        class="message-list"
+      >
+        loading...
+      </div>
+
+    </div>
+
+
+    <!-- stats -->
+
+    <div class="card">
+
+      <h2 class="card-title">
+        driving stats
+      </h2>
+
+      <div
+        id="stats"
+        class="stats"
+      >
+        loading...
+      </div>
+
+    </div>
+
+
+    <!-- history -->
+
+    <div class="card">
+
+      <h2 class="card-title">
+        history
+      </h2>
+
+      <div id="history">
+        loading...
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    /* --------------------------------------------------
+       supabase
+    -------------------------------------------------- */
+
+    const SUPABASE_URL =
+      "https://knkneedyoilbgekqluqq.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_ioDgPFsRSgTM3-vpyZiazg_gZSfzoEb";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    /* --------------------------------------------------
+       load app
+    -------------------------------------------------- */
+
+    async function loadApp() {
+
+      setStatus("connecting...");
+
+      await loadCurrentFronters();
+      await loadMessages();
+      await loadHistory();
+      await loadStats();
+
+      setStatus("connected");
+    }
+
+
+    /* --------------------------------------------------
+       load current fronters
+    -------------------------------------------------- */
+
+    async function loadCurrentFronters() {
+
+      const { data, error } =
+        await supabaseClient
+          .from("driving_sessions")
+          .select(`
+            id,
+            started_at,
+            person_id,
+            people (
+              name
+            )
+          `)
+          .is("ended_at", null)
+          .order("started_at", {
+            ascending: true
+          });
+
+
+      if (error) {
+
+        console.error(error);
+
+        document.getElementById(
+          "activeFronters"
+        ).innerHTML =
+          '<div class="none-active">couldn\'t load fronters</div>';
+
+        setStatus(
+          "couldn't connect to supabase"
+        );
+
+        return;
+      }
+
+
+      const activeElement =
+        document.getElementById(
+          "activeFronters"
+        );
+
+
+      document.body.classList.remove(
+        "puppy-mode",
+        "doomer-mode",
+        "n-mode"
+      );
+
+
+      document
+        .querySelectorAll(".driver-button")
+        .forEach(button => {
+          button.classList.remove("active");
+        });
+
+
+      if (!data || data.length === 0) {
+
+        activeElement.innerHTML =
+          '<div class="none-active">nobody is driving</div>';
+
+        return;
+      }
+
+
+      let html = "";
+
+      let hasDoomer = false;
+      let hasPuppy = false;
+      let hasN = false;
+
+
+      data.forEach(session => {
+
+        const name =
+          session.people.name;
+
+        const className =
+          name.toLowerCase();
+
+
+        html += `
+          <div class="active-person ${escapeHtml(className)}">
+            ${escapeHtml(className)}
+          </div>
+        `;
+
+
+        const button =
+          document.getElementById(
+            "button-" + className
+          );
+
+
+        if (button) {
+          button.classList.add("active");
+        }
+
+
+        if (name === "Doomer") {
+          hasDoomer = true;
+        }
+
+        if (name === "Puppy") {
+          hasPuppy = true;
+        }
+
+        if (name === "N") {
+          hasN = true;
+        }
+      });
+
+
+      activeElement.innerHTML =
+        html;
+
+
+      /*
+        doomer gets priority for the overall
+        page theme because dark mode is easier
+        to see if doomer is one of several
+        active fronters.
+      */
+
+      if (hasDoomer) {
+
+        document.body.classList.add(
+          "doomer-mode"
+        );
+
+      } else if (hasPuppy) {
+
+        document.body.classList.add(
+          "puppy-mode"
+        );
+
+      } else if (hasN) {
+
+        document.body.classList.add(
+          "n-mode"
+        );
+      }
+    }
+
+
+    /* --------------------------------------------------
+       toggle driver
+    -------------------------------------------------- */
+
+    async function toggleDriver(name) {
+
+      setStatus("saving...");
+
+
+      const { data: person, error: personError } =
+        await supabaseClient
+          .from("people")
+          .select("id, name")
+          .eq("name", name)
+          .single();
+
+
+      if (personError) {
+
+        console.error(personError);
+
+        setStatus(
+          "couldn't find " +
+          name.toLowerCase()
+        );
+
+        return;
+      }
+
+
+      /*
+        check whether this person already
+        has an open session
+      */
+
+      const { data: existing, error: existingError } =
+        await supabaseClient
+          .from("driving_sessions")
+          .select("id")
+          .eq("person_id", person.id)
+          .is("ended_at", null)
+          .limit(1);
+
+
+      if (existingError) {
+
+        console.error(existingError);
+
+        setStatus(
+          "couldn't check driver"
+        );
+
+        return;
+      }
+
+
+      /*
+        if they're currently driving,
+        turn them off
+      */
+
+      if (existing && existing.length > 0) {
+
+        const { error } =
+          await supabaseClient
+            .from("driving_sessions")
+            .update({
+              ended_at:
+                new Date().toISOString()
+            })
+            .eq(
+              "id",
+              existing[0].id
+            );
+
+
+        if (error) {
+
+          console.error(error);
+
+          setStatus(
+            "couldn't turn off " +
+            name.toLowerCase()
+          );
+
+          return;
+        }
+
+
+      /*
+        otherwise turn them on
+      */
+
+      } else {
+
+        const { error } =
+          await supabaseClient
+            .from("driving_sessions")
+            .insert({
+              person_id: person.id,
+              started_at:
+                new Date().toISOString()
+            });
+
+
+        if (error) {
+
+          console.error(error);
+
+          setStatus(
+            "couldn't turn on " +
+            name.toLowerCase()
+          );
+
+          return;
+        }
+      }
+
+
+      await loadApp();
+    }
+
+
+    /* --------------------------------------------------
+       send message
+    -------------------------------------------------- */
+
+    async function sendMessage() {
+
+      const input =
+        document.getElementById(
+          "messageInput"
+        );
+
+      const body =
+        input.value.trim();
+
+
+      if (!body) {
+        return;
+      }
+
+
+      setStatus("sending...");
+
+
+      /*
+        use the first currently active
+        fronter as the author
+      */
+
+      const {
+        data: currentSession,
+        error: sessionError
+      } =
+        await supabaseClient
+          .from("driving_sessions")
+          .select(`
+            person_id,
+            started_at,
+            people (
+              name
+            )
+          `)
+          .is("ended_at", null)
+          .order("started_at", {
+            ascending: false
+          })
+          .limit(1)
+          .maybeSingle();
+
+
+      if (sessionError) {
+
+        console.error(sessionError);
+
+        setStatus(
+          "couldn't find current fronter"
+        );
+
+        return;
+      }
+
+
+      if (!currentSession) {
+
+        setStatus(
+          "turn someone on first"
+        );
+
+        return;
+      }
+
+
+      const { error: messageError } =
+        await supabaseClient
+          .from("messages")
+          .insert({
+            person_id:
+              currentSession.person_id,
+            body: body
+          });
+
+
+      if (messageError) {
+
+        console.error(messageError);
+
+        setStatus(
+          "couldn't send: " +
+          messageError.message
+        );
+
+        return;
+      }
+
+
+      input.value = "";
+
+      await loadMessages();
+
+      setStatus("connected");
+    }
+
+
+    /* --------------------------------------------------
+       enter sends message
+    -------------------------------------------------- */
+
+    document
+      .getElementById("messageInput")
+      .addEventListener(
+        "keydown",
+        function(event) {
+
+          if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            sendMessage();
+          }
+        }
+      );
+
+
+    /* --------------------------------------------------
+       load messages
+    -------------------------------------------------- */
+
+    async function loadMessages() {
+
+      const messageList =
+        document.getElementById(
+          "messageList"
+        );
+
+
+      const { data, error } =
+        await supabaseClient
+          .from("messages")
+          .select(`
+            id,
+            body,
+            created_at,
+            person_id,
+            people (
+              name
+            )
+          `)
+          .order("created_at", {
+            ascending: false
+          })
+          .limit(50);
+
+
+      if (error) {
+
+        console.error(error);
+
+        messageList.innerHTML =
+          '<div class="no-messages">couldn\'t load messages</div>';
+
+        return;
+      }
+
+
+      if (!data || data.length === 0) {
+
+        messageList.innerHTML =
+          '<div class="no-messages">no notes yet</div>';
+
+        return;
+      }
+
+
+      let html = "";
+
+
+      data.forEach(message => {
+
+        const name =
+          message.people
+            ? message.people.name
+            : "unknown";
+
+
+        const className =
+          name.toLowerCase();
+
+
+        html += `
+          <div class="message ${escapeHtml(className)}">
+
+            <div class="message-header">
+
+              <div class="message-person">
+                ${escapeHtml(
+                  className
+                )}
+              </div>
+
+              <div class="message-time">
+                ${formatMessageTime(
+                  message.created_at
+                )}
+              </div>
+
+            </div>
+
+            <div class="message-body">
+              ${escapeHtml(
+                message.body
+              )}
+            </div>
+
+          </div>
+        `;
+      });
+
+
+      messageList.innerHTML =
+        html;
+    }
+
+
+    /* --------------------------------------------------
+       history
+    -------------------------------------------------- */
+
+    async function loadHistory() {
+
+      const historyElement =
+        document.getElementById(
+          "history"
+        );
+
+
+      const { data, error } =
+        await supabaseClient
+          .from("driving_sessions")
+          .select(`
+            id,
+            started_at,
+            ended_at,
+            people (
+              name
+            )
+          `)
+          .order("started_at", {
+            ascending: false
+          })
+          .limit(500);
+
+
+      if (error) {
+
+        console.error(error);
+
+        historyElement.innerHTML =
+          '<div class="empty">couldn\'t load history</div>';
+
+        return;
+      }
+
+
+      if (!data || data.length === 0) {
+
+        historyElement.innerHTML =
+          '<div class="empty">no history yet</div>';
+
+        return;
+      }
+
+
+      const groups = {};
+
+
+      data.forEach(session => {
+
+        const date =
+          new Date(
+            session.started_at
+          );
+
+
+        const key =
+          berlinDateKey(date);
+
+
+        if (!groups[key]) {
+          groups[key] = [];
+        }
+
+
+        groups[key].push(session);
+      });
+
+
+      let html = "";
+
+
+      Object.keys(groups).forEach(key => {
+
+        const sessions =
+          groups[key];
+
+
+        const firstDate =
+          new Date(
+            sessions[0].started_at
+          );
+
+
+        html += `
+          <div class="history-item">
+
+            <div class="day-title">
+              ${formatDay(firstDate)}
+            </div>
+        `;
+
+
+        sessions.forEach(session => {
+
+          const person =
+            session.people
+              ? session.people.name
+              : "unknown";
+
+
+          const start =
+            formatTime(
+              session.started_at
+            );
+
+
+          const end =
+            session.ended_at
+              ? formatTime(
+                  session.ended_at
+                )
+              : "now";
+
+
+          html += `
+            <div class="session">
+
+              <div class="person-name">
+                ${escapeHtml(
+                  person.toLowerCase()
+                )}
+              </div>
+
+              <div class="time">
+                ${start} – ${end}
+              </div>
+
+            </div>
+          `;
+        });
+
+
+        html += `
+          </div>
+        `;
+      });
+
+
+      historyElement.innerHTML =
+        html;
+    }
+
+
+    /* --------------------------------------------------
+       stats
+    -------------------------------------------------- */
+
+    async function loadStats() {
+
+      const statsElement =
+        document.getElementById(
+          "stats"
+        );
+
+
+      const { data, error } =
+        await supabaseClient
+          .from("driving_sessions")
+          .select(`
+            started_at,
+            ended_at,
+            people (
+              name
+            )
+          `);
+
+
+      if (error) {
+
+        console.error(error);
+
+        statsElement.innerHTML =
+          '<div class="empty">couldn\'t load stats</div>';
+
+        return;
+      }
+
+
+      const totals = {
+        Puppy: 0,
+        Doomer: 0,
+        N: 0
+      };
+
+
+      const now =
+        Date.now();
+
+
+      data.forEach(session => {
+
+        if (!session.people) {
+          return;
+        }
+
+
+        const name =
+          session.people.name;
+
+
+        const start =
+          new Date(
+            session.started_at
+          ).getTime();
+
+
+        const end =
+          session.ended_at
+            ? new Date(
+                session.ended_at
+              ).getTime()
+            : now;
+
+
+        const duration =
+          Math.max(
+            0,
+            end - start
+          );
+
+
+        if (
+          totals[name] !== undefined
+        ) {
+
+          totals[name] += duration;
+        }
+      });
+
+
+      statsElement.innerHTML = `
+
+        <div class="stat">
+
+          <div class="stat-name">
+            puppy
+          </div>
+
+          <div class="stat-time">
+            ${formatDuration(
+              totals.Puppy
+            )}
+          </div>
+
+        </div>
+
+        <div class="stat">
+
+          <div class="stat-name">
+            doomer
+          </div>
+
+          <div class="stat-time">
+            ${formatDuration(
+              totals.Doomer
+            )}
+          </div>
+
+        </div>
+
+        <div class="stat">
+
+          <div class="stat-name">
+            n
+          </div>
+
+          <div class="stat-time">
+            ${formatDuration(
+              totals.N
+            )}
+          </div>
+
+        </div>
+      `;
+    }
+
+
+    /* --------------------------------------------------
+       germany timezone helpers
+    -------------------------------------------------- */
+
+    function berlinDateKey(date) {
+
+      return new Intl.DateTimeFormat(
+        "en-CA",
+        {
+          timeZone: "Europe/Berlin",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit"
+        }
+      ).format(date);
+    }
+
+
+    function formatTime(timestamp) {
+
+      return new Date(timestamp)
+        .toLocaleTimeString("en-GB", {
+          timeZone: "Europe/Berlin",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+    }
+
+
+    function formatDateTime(timestamp) {
+
+      return new Date(timestamp)
+        .toLocaleString("en-GB", {
+          timeZone: "Europe/Berlin",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+    }
+
+
+    function formatMessageTime(timestamp) {
+
+      return new Date(timestamp)
+        .toLocaleString("en-GB", {
+          timeZone: "Europe/Berlin",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+    }
+
+
+    function formatDay(date) {
+
+      const todayKey =
+        berlinDateKey(
+          new Date()
+        );
+
+
+      const yesterday =
+        new Date();
+
+      yesterday.setDate(
+        yesterday.getDate() - 1
+      );
+
+
+      const yesterdayKey =
+        berlinDateKey(
+          yesterday
+        );
+
+
+      const dateKey =
+        berlinDateKey(date);
+
+
+      if (dateKey === todayKey) {
+        return "today";
+      }
+
+
+      if (dateKey === yesterdayKey) {
+        return "yesterday";
+      }
+
+
+      return new Intl.DateTimeFormat(
+        "en-GB",
+        {
+          timeZone: "Europe/Berlin",
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          year: "numeric"
+        }
+      ).format(date);
+    }
+
+
+    function formatDuration(
+      milliseconds
+    ) {
+
+      const totalMinutes =
+        Math.floor(
+          milliseconds / 60000
+        );
+
+
+      if (totalMinutes < 1) {
+        return "less than a minute";
+      }
+
+
+      const hours =
+        Math.floor(
+          totalMinutes / 60
+        );
+
+
+      const minutes =
+        totalMinutes % 60;
+
+
+      if (hours === 0) {
+        return minutes + " min";
+      }
+
+
+      if (minutes === 0) {
+        return hours + " hr";
+      }
+
+
+      return (
+        hours +
+        " hr " +
+        minutes +
+        " min"
+      );
+    }
+
+
+    function escapeHtml(text) {
+
+      const div =
+        document.createElement(
+          "div"
+        );
+
+      div.textContent =
+        text;
+
+      return div.innerHTML;
+    }
+
+
+    function setStatus(message) {
+
+      document.getElementById(
+        "status"
+      ).textContent = message;
+    }
+
+
+    /* --------------------------------------------------
+       start
+    -------------------------------------------------- */
+
+    loadApp();
+
+  </script>
+
+</body>
+</html>
+```
